@@ -18,6 +18,47 @@ description: >
 - Tạo tài liệu kiến trúc hoàn chỉnh cho dev team
 - Đánh giá impact của feature mới lên hệ thống hiện có
 
+## Entry-Point Commands
+
+> Có thể gọi **full pipeline** hoặc **từng giai đoạn** tùy nhu cầu.
+
+### Full Pipeline (mặc định)
+```
+/architecture-design [yêu cầu]
+```
+→ Chạy P0 → P8 end-to-end.
+
+### Per-Stage Commands
+
+| Command | Phases | Mục đích | Duration |
+|---|:---:|---|:---:|
+| `/arch-intake` | P0 + P0.5 | Phân tích yêu cầu + enterprise context | 1-3h |
+| `/arch-design` | P1 → P4 | Discovery, integration, C4, DB, API | 5-10h |
+| `/arch-review` | P5 + P6 | Tổng hợp tài liệu + quality review | 2-4h |
+| `/arch-deliver` | P6.5 → P8 | Migration, đóng gói, handover | 1-2h |
+
+### Routing Logic
+
+```
+IF user gõ "/architecture-design" → chạy full pipeline (P0 → P8)
+IF user gõ "/arch-intake"  → chạy ONLY P0 + P0.5 → output: requirements_summary + enterprise_context
+IF user gõ "/arch-design"  → REQUIRE input artifacts từ P0/P0.5 → chạy P1-P4
+IF user gõ "/arch-review"  → REQUIRE input từ P4 (DB + API + C4) → chạy P5-P6
+IF user gõ "/arch-deliver" → REQUIRE input từ P6 (master doc + review report) → chạy P6.5-P8
+```
+
+### Required Inputs per Command
+
+| Command | Required Input | Cách cung cấp |
+|---|---|---|
+| `/arch-intake` | Raw user input (idea, BRD, PRD) | Gõ trực tiếp hoặc @[file] |
+| `/arch-design` | `requirements_summary.md` + `enterprise_context.md` | @[path] hoặc từ conversation trước |
+| `/arch-review` | `c4_models.md` + `database_design.md` + `api_design.md` | @[path] hoặc từ conversation trước |
+| `/arch-deliver` | `master_architecture.md` + `review_report.md` | @[path] hoặc từ conversation trước |
+
+> **Nếu user gọi stage command mà THIẾU required input:**
+> Agent PHẢI hỏi user cung cấp, KHÔNG được tự generate từ đầu.
+
 ## Pipeline Overview — 12 Phases
 
 | Phase | Name | Subagent Role | Parallel? | Duration |
@@ -110,20 +151,30 @@ DO NOT launch next phase subagents until current phase output is approved.
 Each phase skill is in `phases/<phase-name>/SKILL.md`.
 Each template is in `templates/input/` or `templates/output/`.
 
-## Sub-skill Dependencies
-| Phase Skill | Uses Sub-skills |
-|---|---|
-| Phase 0 | `brainstorming`, `ask_question` |
-| Phase 0.5 | `docs-architect` |
-| Phase 1 | `docs-architect`, research subagents |
-| Phase 2 | `backend-architect` |
-| Phase 3 | `c4-architecture`, `brainstorming` |
-| Phase 4 | `database-design`, `database-architect`, `backend-architect` |
-| Phase 5 | `docs-architect` |
-| Phase 6 | `architect-review`, `architecture-decision-records` |
-| Phase 6.5 | Template-driven + `database-design` |
-| Phase 7 | `docs-architect`, file operations |
-| Phase 8 | Template-driven |
+## Sub-skill Dependencies (Bundled)
+
+> **All required sub-skills are bundled at `bundled-skills/` inside this plugin.**
+> When delegating to a subagent, read the corresponding `bundled-skills/<name>/SKILL.md`
+> and include its instructions in the subagent prompt.
+
+| Phase Skill | Uses Sub-skill | Bundled at | Criticality |
+|---|---|---|:---:|
+| Phase 0 | `brainstorming` | `bundled-skills/brainstorming/SKILL.md` | Optional (L1 only) |
+| Phase 0 | `ask_question` | *(built-in tool)* | Required |
+| Phase 0.5 | `docs-architect` | `bundled-skills/docs-architect/SKILL.md` | Critical |
+| Phase 1 | `docs-architect` | `bundled-skills/docs-architect/SKILL.md` | Critical |
+| Phase 2 | `backend-architect` | `bundled-skills/backend-architect/SKILL.md` | Critical |
+| Phase 3 | `c4-architecture` | `bundled-skills/c4-architecture/SKILL.md` | Critical |
+| Phase 3 | `brainstorming` | `bundled-skills/brainstorming/SKILL.md` | Optional |
+| Phase 4 | `database-design` | `bundled-skills/database-design/SKILL.md` | Critical |
+| Phase 4 | `database-architect` | `bundled-skills/database-architect/SKILL.md` | Important |
+| Phase 4 | `backend-architect` | `bundled-skills/backend-architect/SKILL.md` | Critical |
+| Phase 5 | `docs-architect` | `bundled-skills/docs-architect/SKILL.md` | Critical |
+| Phase 6 | `architect-review` | `bundled-skills/architect-review/SKILL.md` | Critical |
+| Phase 6 | `architecture-decision-records` | `bundled-skills/architecture-decision-records/SKILL.md` | Critical |
+| Phase 6.5 | `database-design` | `bundled-skills/database-design/SKILL.md` | Critical |
+| Phase 7 | `docs-architect` | `bundled-skills/docs-architect/SKILL.md` | Critical |
+| Phase 8 | Template-driven | *(no sub-skill)* | — |
 
 ## Quality Criteria (Pass/Fail)
 | Criteria | Pass |

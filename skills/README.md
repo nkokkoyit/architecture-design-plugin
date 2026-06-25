@@ -47,21 +47,39 @@ Mở conversation mới, gõ bất kỳ câu nào liên quan tới "thiết kế
 
 ## 2. Cách Sử dụng
 
-### Gọi Skill
-
-Gõ trong chat:
+### Full Pipeline (mặc định)
 
 ```
 /architecture-design [yêu cầu của bạn]
 ```
+→ Chạy toàn bộ 12 phases, từ phân tích yêu cầu đến đóng gói delivery.
 
-Hoặc tự nhiên:
+### Per-Stage Commands (chạy từng giai đoạn)
+
+| Command | Phases | Khi nào dùng |
+|---|:---:|---|
+| `/arch-intake` | P0 + P0.5 | Chỉ muốn phân tích yêu cầu + xác định enterprise context |
+| `/arch-design` | P1 → P4 | Đã có requirements, cần thiết kế C4 + DB + API |
+| `/arch-review` | P5 + P6 | Đã có design, cần tổng hợp document + review chất lượng |
+| `/arch-deliver` | P6.5 → P8 | Đã có master doc, cần migration plan + đóng gói + handover |
+
+**Ví dụ:**
+```
+# Chỉ chạy intake
+/arch-intake Tôi muốn xây dựng hệ thống đặt phòng họp
+
+# Tiếp tục design từ kết quả intake trước
+/arch-design @[path/to/requirements_summary.md] @[path/to/enterprise_context.md]
+
+# Review document có sẵn
+/arch-review @[path/to/c4_models.md] @[path/to/database_design.md] @[path/to/api_design.md]
+```
+
+### Gọi tự nhiên (agent tự detect)
 
 ```
 Thiết kế kiến trúc cho hệ thống quản lý đơn hàng online
 ```
-
-Agent sẽ tự detect skill dựa trên `description` trong SKILL.md frontmatter.
 
 ### Flow hoạt động
 
