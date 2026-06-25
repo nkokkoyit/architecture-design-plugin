@@ -1,0 +1,25 @@
+{
+  "name": "architecture-design-plugin",
+  "version": "1.2.0",
+  "description": "Enterprise-grade architecture design orchestrator. 12-phase pipeline from requirements to dev-ready package with TOGAF ADM alignment (~85%). Includes EA orchestration, C4 modeling, DB/API design, quality review, migration planning, and governance.",
+  "author": {
+    "name": "thangtt",
+    "email": ""
+  },
+  "repository": "",
+  "license": "MIT",
+  "keywords": [
+    "architecture",
+    "enterprise",
+    "design",
+    "c4-model",
+    "togaf",
+    "microservice",
+    "database",
+    "api",
+    "review",
+    "adr",
+    "migration",
+    "governance"
+  ]
+}
