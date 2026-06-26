@@ -9,7 +9,7 @@ description: "C4 architecture modeling (L1-L4), state machine design, domain-spe
 ## Effort: 2-3h
 
 ## Purpose
-Thiết kế C4 models, state machine, và domain-specific features.
+Design C4 models, state machine, and domain-specific features.
 
 ## Steps
 
@@ -18,8 +18,8 @@ Thiết kế C4 models, state machine, và domain-specific features.
 2. **Level 2: Container Diagram** — Deployable units, databases, services
 3. **Level 3: Component Diagram** — Internal modules of the new service
 4. **Level 4: Class Diagram** *(optional)* — Key classes, methods, relationships
-   > L4 là optional cho service-level design. Chỉ include nếu service có domain model phức tạp (≥10 classes).
-   > Nếu skip L4, ghi rõ lý do trong output.
+   > L4 is optional for service-level design. Only include if the service has a complex domain model (≥10 classes).
+   > If skipping L4, clearly state the reason in the output.
 
 All diagrams in Mermaid format.
 Each level includes description table.
@@ -58,6 +58,6 @@ MAP: requirement → C4 component, state
 
 ## EA Checkpoint
 ⚠️ EA MUST review C4 models before Phase 4. Check:
-- L2 Container Diagram khớp với enterprise landscape
-- Không vi phạm bounded context rules
+- L2 Container Diagram aligns with enterprise landscape
+- No bounded context rule violations
 - State count matches requirements

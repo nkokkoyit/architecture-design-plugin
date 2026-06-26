@@ -1,12 +1,12 @@
 # C4 Model Quick Reference
 
-Hướng dẫn sử dụng C4 Model trong thiết kế kiến trúc.
+Guide for using the C4 Model in architecture design.
 
 ## 4 Levels
 
 | Level | Name | Shows | Audience |
 |:---:|---|---|---|
-| 1 | System Context | Hệ thống + actors + external systems | Everyone |
+| 1 | System Context | System + actors + external systems | Everyone |
 | 2 | Container | Deployable units (apps, DBs, queues) | Tech team |
 | 3 | Component | Internal modules within 1 container | Dev team |
 | 4 | Code | Classes, interfaces, relationships | Developers |

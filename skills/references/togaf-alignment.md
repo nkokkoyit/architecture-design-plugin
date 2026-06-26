@@ -1,6 +1,6 @@
 # TOGAF ADM Alignment Reference
 
-Mapping giữa 12-Phase Pipeline và TOGAF ADM.
+Mapping between the 12-Phase Pipeline and TOGAF ADM.
 
 ## Mapping Table
 

@@ -9,18 +9,18 @@ description: "Design integration architecture: AS-IS vs TO-BE flows, architectur
 ## Effort: 1h
 
 ## Purpose
-Thiết kế integration flows và xác định key architecture decisions.
+Design integration flows and determine key architecture decisions.
 
 ## Steps
 
-### 2.1 — AS-IS Flow (nếu redesign)
-Vẽ sequence diagram hiện trạng. Identify pain points.
+### 2.1 — AS-IS Flow (if redesign)
+Draw the current-state sequence diagram. Identify pain points.
 
 ### 2.2 — TO-BE Flow
-Thiết kế luồng mới. Highlight improvements vs AS-IS.
+Design the new flow. Highlight improvements vs AS-IS.
 
 ### 2.3 — Architecture Pattern Decision
-Chọn pattern phù hợp: BFF, API Gateway, CQRS, Event-Driven, etc.
+Select the appropriate pattern: BFF, API Gateway, CQRS, Event-Driven, etc.
 Justify choice based on requirements + enterprise context.
 
 ### 2.4 — Service Interaction Matrix

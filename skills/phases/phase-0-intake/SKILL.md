@@ -9,96 +9,96 @@ description: "Classify input maturity (L1-L4), structured Q&A to clarify require
 ## Effort: 15 min (L4) → 2h (L1)
 
 ## Purpose
-Phân loại đầu vào, làm rõ yêu cầu trước khi bắt đầu thiết kế.
+Classify input and clarify requirements before starting the design process.
 
 ## ⚠️ CRITICAL RULE: Classify BEFORE Q&A
 
-> **Classify dựa trên RAW USER INPUT ban đầu, KHÔNG PHẢI dựa trên quality of user answers.**
+> **Classify based on the RAW USER INPUT initially provided, NOT based on the quality of user answers.**
 >
-> Ví dụ:
-> - User gõ "Tôi muốn xây dựng hệ thống đặt phòng họp" → **L1** (dù user trả lời rất chi tiết sau đó)
-> - User gửi BRD 2 trang → **L3** (dù BRD còn thiếu nhiều thông tin)
-> - User gửi PRD + Swagger + mockup → **L4**
+> Examples:
+> - User types "I want to build a meeting room booking system" → **L1** (even if the user gives very detailed answers later)
+> - User submits a 2-page BRD → **L3** (even if the BRD is still missing a lot of information)
+> - User submits PRD + Swagger + mockup → **L4**
 
-## Step 0.1 — Classify Input (NGAY LẬP TỨC)
+## Step 0.1 — Classify Input (IMMEDIATELY)
 
-Đọc raw user input và classify NGAY. Thông báo cho user biết level đã classify.
+Read the raw user input and classify IMMEDIATELY. Notify the user of the classified level.
 
-**Output mẫu:**
+**Sample output:**
 ```
 📋 Input Classification: Level 1 — Just Idea
-→ Cần Q&A sâu (15-20 câu) để làm rõ yêu cầu trước khi thiết kế.
+→ Deep Q&A needed (15-20 questions) to clarify requirements before design.
 ```
 
 ### Classification Criteria
 
-| Level | Đặc điểm nhận diện | Action |
+| Level | Identifying Characteristics | Action |
 |:---:|---|---|
-| **L4** | Có ≥ 2 trong: PRD/SRS, Swagger/OpenAPI, UI mockup/HTML | Skip Q&A → output directly |
-| **L3** | Có document cấu trúc (BRD, Feature Spec) VỚI sections rõ ràng (Objectives, Actors, Requirements) | Q&A nhẹ — 3-5 câu bổ sung |
-| **L2** | Có mô tả semi-structured (email, slide, meeting notes) VỚI một số chi tiết cụ thể | Q&A trung bình — 8-12 câu |
-| **L1** | Chỉ có ý tưởng, 1-5 câu mô tả, KHÔNG có document đính kèm | Q&A sâu — 15-20 câu + brainstorming |
+| **L4** | Has ≥ 2 of: PRD/SRS, Swagger/OpenAPI, UI mockup/HTML | Skip Q&A → output directly |
+| **L3** | Has a structured document (BRD, Feature Spec) WITH clear sections (Objectives, Actors, Requirements) | Light Q&A — 3-5 supplementary questions |
+| **L2** | Has a semi-structured description (email, slide, meeting notes) WITH some specific details | Medium Q&A — 8-12 questions |
+| **L1** | Only has an idea, 1-5 sentence description, NO attached document | Deep Q&A — 15-20 questions + brainstorming |
 
-### Ranh giới L1 vs L2
-- Nếu user input < 100 words VÀ không có document đính kèm → **L1**
-- Nếu user input có numbered list hoặc sections nhưng không có document → **L2**
-- Nếu nghi ngờ giữa L1 và L2 → chọn **L1** (conservative — hỏi nhiều hơn tốt hơn thiếu)
+### Boundary Between L1 and L2
+- If user input < 100 words AND no attached document → **L1**
+- If user input has a numbered list or sections but no document → **L2**
+- If uncertain between L1 and L2 → choose **L1** (conservative — asking more is better than missing info)
 
-## Step 0.2 — Q&A Loop (theo Level)
+## Step 0.2 — Q&A Loop (by Level)
 
-> **MUST read `templates/input/intake_checklist.tmpl.md`** trước khi bắt đầu Q&A.
+> **MUST read `templates/input/intake_checklist.tmpl.md`** before starting Q&A.
 
-### L1: Q&A Sâu — 15-20 câu, 2-3 rounds
+### L1: Deep Q&A — 15-20 questions, 2-3 rounds
 
 ```
-ROUND 1 (7-8 câu) — Vision, Scope, Actors:
-  - Mô tả ý tưởng chi tiết hơn?
-  - Giải quyết vấn đề gì cho ai?
-  - Greenfield hay extension hệ thống hiện có?
+ROUND 1 (7-8 questions) — Vision, Scope, Actors:
+  - Describe the idea in more detail?
+  - What problem does it solve and for whom?
+  - Greenfield or extension of an existing system?
   - MVP scope vs full vision?
-  - Ai sẽ sử dụng? (roles, personas)
-  - Kênh truy cập? (Web, Mobile, API)
-  - Cần authentication không? Loại gì?
+  - Who will use it? (roles, personas)
+  - Access channels? (Web, Mobile, API)
+  - Is authentication needed? What type?
 
-  → Chờ user trả lời
+  → Wait for user response
 
-ROUND 2 (5-6 câu) — Domain, Integration, Technical:
-  - Thuộc business domain nào?
+ROUND 2 (5-6 questions) — Domain, Integration, Technical:
+  - Which business domain does it belong to?
   - Regulated compliance? (PCI-DSS, HIPAA...)
-  - Tích hợp với hệ thống nào?
-  - Có Swagger/API doc không?
-  - Technology stack bị ràng buộc?
-  - Team size và timeline?
+  - Which systems does it integrate with?
+  - Is there a Swagger/API doc?
+  - Any technology stack constraints?
+  - Team size and timeline?
 
-  → Chờ user trả lời
+  → Wait for user response
 
-ROUND 3 (3-5 câu) — Data, NFR, Gaps:
-  - Dữ liệu nhạy cảm nào? (PII, tài chính)
+ROUND 3 (3-5 questions) — Data, NFR, Gaps:
+  - What sensitive data? (PII, financial)
   - SLA expectations? (uptime, response time)
   - Data retention?
-  - [Bất kỳ gap nào còn lại từ checklist]
+  - [Any remaining gaps from checklist]
 
-  → Chờ user trả lời → Generate output
+  → Wait for user response → Generate output
 ```
 
-### L2: Q&A Trung bình — 8-12 câu, 1-2 rounds
+### L2: Medium Q&A — 8-12 questions, 1-2 rounds
 
 ```
-ROUND 1 (8-10 câu):
-  - Cover tất cả checklist categories chưa có trong input
+ROUND 1 (8-10 questions):
+  - Cover all checklist categories not present in the input
   - Focus: Integration, NFR, Compliance, Data
 
-  → IF gaps remain → ROUND 2 (2-3 câu)
+  → IF gaps remain → ROUND 2 (2-3 questions)
   → ELSE → Generate output
 ```
 
-### L3: Q&A Nhẹ — 3-5 câu, 1 round
+### L3: Light Q&A — 3-5 questions, 1 round
 
 ```
-ROUND 1 (3-5 câu):
-  - NFR có rõ ràng không?
+ROUND 1 (3-5 questions):
+  - Are NFRs clearly defined?
   - Compliance requirements?
-  - Integration points đầy đủ chưa?
+  - Are integration points complete?
   - Rollback/DR strategy?
   - API versioning?
 
@@ -108,7 +108,7 @@ ROUND 1 (3-5 câu):
 ### L4: Skip Q&A
 ```
   Proceed directly to output generation.
-  (Có thể hỏi 1-2 câu clarification nếu thấy gap critical)
+  (May ask 1-2 clarification questions if a critical gap is found)
 ```
 
 ## Step 0.3 — Generate Output
@@ -119,10 +119,10 @@ Fill ALL sections in template:
 1. Vision & Scope
 2. Actors & Personas
 3. Functional Requirements (FR-001, FR-002...)
-4. Non-Functional Requirements (NFR-001...) — PHẢI có target cụ thể
+4. Non-Functional Requirements (NFR-001...) — MUST have specific targets
 5. Constraints (CON-001...)
-6. Integration Points — với direction, protocol
-7. Open Questions — bất kỳ điều gì chưa rõ
+6. Integration Points — with direction, protocol
+7. Open Questions — anything still unclear
 
 Create initial `requirements_traceability.md` using `templates/output/requirements_traceability.tmpl.md`.
 

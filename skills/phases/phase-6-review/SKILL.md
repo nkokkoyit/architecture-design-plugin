@@ -9,7 +9,7 @@ description: "Architecture quality review: 16 standard pillars + 5 EA alignment 
 ## Effort: 1-2h (including fix loops)
 
 ## Purpose
-Quality gate — đánh giá chất lượng tài liệu kiến trúc.
+Quality gate — evaluate the quality of architecture documentation.
 
 ## Review Protocol
 

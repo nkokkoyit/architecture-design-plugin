@@ -9,7 +9,7 @@ description: "Migration & rollout plan: deployment strategy, DB migration script
 ## Effort: 30 min
 
 ## Purpose
-Kế hoạch triển khai an toàn: deploy thế nào, rollback ra sao, ai phối hợp.
+Safe deployment plan: how to deploy, how to rollback, who coordinates.
 
 ## Sections
 

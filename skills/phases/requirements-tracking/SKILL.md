@@ -9,7 +9,7 @@ description: "Continuous requirements traceability: extract, enrich, map, verify
 ## Trigger: End of each phase
 
 ## Purpose
-Duy trì traceability matrix xuyên suốt pipeline. Đảm bảo mọi requirement được hiện thực.
+Maintain the traceability matrix throughout the pipeline. Ensure every requirement is implemented.
 
 ## Lifecycle
 

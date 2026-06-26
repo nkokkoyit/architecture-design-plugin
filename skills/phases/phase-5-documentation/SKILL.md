@@ -9,7 +9,7 @@ description: "Consolidate all design artifacts into a single master architecture
 ## Effort: 1-2h
 
 ## Purpose
-Tổng hợp tất cả artifacts thành 1 master document hoàn chỉnh.
+Consolidate all artifacts into a single, complete master document.
 
 ## Document Structure
 

@@ -1,46 +1,46 @@
 # EA Review Lens — 5 Enterprise Architecture Alignment Checks
 
-Sử dụng 5 câu hỏi này tại Phase 6 (Review) để đánh giá architecture alignment với enterprise context.
+Use these 5 questions at Phase 6 (Review) to evaluate architecture alignment with the enterprise context.
 
 ## EA-1: Bounded Context Alignment
 
-**Question:** Service mới có align với Bounded Context đã define không?
+**Question:** Does the new service align with the defined Bounded Context?
 
 **Pass criteria:**
-- Không cross-context data coupling (không share DB với service khác)
-- Entity ownership rõ ràng (mỗi entity chỉ thuộc 1 context)
-- Communication giữa contexts qua API hoặc events (không qua shared state)
+- No cross-context data coupling (no shared DB with other services)
+- Entity ownership is clear (each entity belongs to only 1 context)
+- Communication between contexts via API or events (not via shared state)
 
 **Red flags:**
-- Shared database tables giữa services
+- Shared database tables between services
 - Direct DB access from another service
-- Circular dependencies giữa contexts
+- Circular dependencies between contexts
 
 ---
 
 ## EA-2: Data Ownership
 
-**Question:** Data ownership có rõ ràng không?
+**Question:** Is data ownership clearly defined?
 
 **Pass criteria:**
-- Mỗi entity có 1 service là master owner
-- Other services chỉ hold cached/derived copies
-- Source-of-truth documented rõ ràng
+- Each entity has 1 service as the master owner
+- Other services only hold cached/derived copies
+- Source-of-truth is clearly documented
 
 **Red flags:**
-- 2+ services cùng write vào same entity
-- Không rõ ai là source-of-truth
+- 2+ services writing to the same entity
+- Unclear who is the source-of-truth
 - Shared database anti-pattern
 
 ---
 
 ## EA-3: Team Topology Fit
 
-**Question:** Deployment strategy có align với team topology không?
+**Question:** Does the deployment strategy align with the team topology?
 
 **Pass criteria:**
-- Service boundaries align với team boundaries (Conway's Law)
-- Team có đủ autonomy deploy independently
+- Service boundaries align with team boundaries (Conway's Law)
+- Team has sufficient autonomy to deploy independently
 - Clear ownership → clear accountability
 
 **Red flags:**
@@ -52,12 +52,12 @@ Sử dụng 5 câu hỏi này tại Phase 6 (Review) để đánh giá architect
 
 ## EA-4: Observability Integration
 
-**Question:** Monitoring/alerting có integrate vào enterprise platform chung không?
+**Question:** Is monitoring/alerting integrated into the shared enterprise platform?
 
 **Pass criteria:**
-- Logs/metrics/traces gửi về central platform
-- Alert routing theo on-call schedule chung
-- Dashboards accessible cho relevant stakeholders
+- Logs/metrics/traces sent to central platform
+- Alert routing follows the shared on-call schedule
+- Dashboards accessible to relevant stakeholders
 - Correlation IDs for distributed tracing
 
 **Red flags:**
@@ -69,7 +69,7 @@ Sử dụng 5 câu hỏi này tại Phase 6 (Review) để đánh giá architect
 
 ## EA-5: API Versioning & Deprecation
 
-**Question:** API versioning strategy có documented không?
+**Question:** Is the API versioning strategy documented?
 
 **Pass criteria:**
 - Version strategy defined (URL path, header, etc.)

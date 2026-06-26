@@ -10,54 +10,54 @@ description: >
 # Architecture Design — Enterprise Architect Orchestrator
 
 ## Purpose
-Điều phối thiết kế kiến trúc ứng dụng end-to-end. Main Agent giữ vai trò **Enterprise Architect** — nắm toàn bộ knowledge về hệ thống công nghệ doanh nghiệp, phân phối nhiệm vụ cho subagents, và review khách quan mọi output.
+Orchestrate end-to-end application architecture design. The Main Agent acts as the **Enterprise Architect** — holds all knowledge about the enterprise technology landscape, delegates tasks to subagents, and objectively reviews all outputs.
 
 ## When to Use
-- Thiết kế kiến trúc cho ứng dụng/microservice mới
-- Redesign ứng dụng hiện có (AS-IS → TO-BE)
-- Tạo tài liệu kiến trúc hoàn chỉnh cho dev team
-- Đánh giá impact của feature mới lên hệ thống hiện có
+- Design architecture for a new application/microservice
+- Redesign an existing application (AS-IS → TO-BE)
+- Create comprehensive architecture documentation for the dev team
+- Assess the impact of a new feature on the existing system
 
 ## Entry-Point Commands
 
-> Có thể gọi **full pipeline** hoặc **từng giai đoạn** tùy nhu cầu.
+> You can invoke the **full pipeline** or **individual stages** depending on your needs.
 
-### Full Pipeline (mặc định)
+### Full Pipeline (default)
 ```
-/architecture-design [yêu cầu]
+/architecture-design [request]
 ```
-→ Chạy P0 → P8 end-to-end.
+→ Runs P0 → P8 end-to-end.
 
 ### Per-Stage Commands
 
-| Command | Phases | Mục đích | Duration |
+| Command | Phases | Purpose | Duration |
 |---|:---:|---|:---:|
-| `/arch-intake` | P0 + P0.5 | Phân tích yêu cầu + enterprise context | 1-3h |
+| `/arch-intake` | P0 + P0.5 | Analyze requirements + enterprise context | 1-3h |
 | `/arch-design` | P1 → P4 | Discovery, integration, C4, DB, API | 5-10h |
-| `/arch-review` | P5 + P6 | Tổng hợp tài liệu + quality review | 2-4h |
-| `/arch-deliver` | P6.5 → P8 | Migration, đóng gói, handover | 1-2h |
+| `/arch-review` | P5 + P6 | Consolidate documentation + quality review | 2-4h |
+| `/arch-deliver` | P6.5 → P8 | Migration, packaging, handover | 1-2h |
 
 ### Routing Logic
 
 ```
-IF user gõ "/architecture-design" → chạy full pipeline (P0 → P8)
-IF user gõ "/arch-intake"  → chạy ONLY P0 + P0.5 → output: requirements_summary + enterprise_context
-IF user gõ "/arch-design"  → REQUIRE input artifacts từ P0/P0.5 → chạy P1-P4
-IF user gõ "/arch-review"  → REQUIRE input từ P4 (DB + API + C4) → chạy P5-P6
-IF user gõ "/arch-deliver" → REQUIRE input từ P6 (master doc + review report) → chạy P6.5-P8
+IF user types "/architecture-design" → run full pipeline (P0 → P8)
+IF user types "/arch-intake"  → run ONLY P0 + P0.5 → output: requirements_summary + enterprise_context
+IF user types "/arch-design"  → REQUIRE input artifacts from P0/P0.5 → run P1-P4
+IF user types "/arch-review"  → REQUIRE input from P4 (DB + API + C4) → run P5-P6
+IF user types "/arch-deliver" → REQUIRE input from P6 (master doc + review report) → run P6.5-P8
 ```
 
 ### Required Inputs per Command
 
-| Command | Required Input | Cách cung cấp |
+| Command | Required Input | How to Provide |
 |---|---|---|
-| `/arch-intake` | Raw user input (idea, BRD, PRD) | Gõ trực tiếp hoặc @[file] |
-| `/arch-design` | `requirements_summary.md` + `enterprise_context.md` | @[path] hoặc từ conversation trước |
-| `/arch-review` | `c4_models.md` + `database_design.md` + `api_design.md` | @[path] hoặc từ conversation trước |
-| `/arch-deliver` | `master_architecture.md` + `review_report.md` | @[path] hoặc từ conversation trước |
+| `/arch-intake` | Raw user input (idea, BRD, PRD) | Type directly or @[file] |
+| `/arch-design` | `requirements_summary.md` + `enterprise_context.md` | @[path] or from previous conversation |
+| `/arch-review` | `c4_models.md` + `database_design.md` + `api_design.md` | @[path] or from previous conversation |
+| `/arch-deliver` | `master_architecture.md` + `review_report.md` | @[path] or from previous conversation |
 
-> **Nếu user gọi stage command mà THIẾU required input:**
-> Agent PHẢI hỏi user cung cấp, KHÔNG được tự generate từ đầu.
+> **If user invokes a stage command MISSING required input:**
+> Agent MUST ask user to provide it. DO NOT self-generate from scratch.
 
 ## Pipeline Overview — 12 Phases
 
@@ -96,43 +96,63 @@ DO NOT launch next phase subagents until current phase output is approved.
 ## EA Orchestration Protocol
 
 ### 1. KNOWLEDGE HOLDER
-- Giữ toàn bộ company landscape, tech radar, team topology
-- Giữ toàn bộ project context tích lũy qua các phases
-- KHÔNG delegate full knowledge — chỉ cung cấp context cần thiết cho subagent
+- Hold the entire company landscape, tech radar, team topology
+- Hold the entire project context accumulated across phases
+- DO NOT delegate full knowledge — only provide the context necessary for the subagent
+
+#### Knowledge Base Loading Protocol
+```
+AT STARTUP (before Phase 0):
+  1. Read `knowledge-base/kb_config.md` for configured paths
+  2. IF company_kb path exists → read `company-landscape.md` (REQUIRED)
+  3. Read all other .md files in the KB directory
+  4. Store in EA context as "company knowledge"
+
+AT PHASE 0.5:
+  5. IF KB loaded → skip Q&A for sections already covered
+  6. ONLY ask user about GAPS not in the KB
+  7. IF KB NOT loaded → fall back to full Q&A (original behavior)
+```
+
+#### KB Directory Location (configurable)
+Priority order:
+1. Path specified in `knowledge-base/kb_config.md` → `company_kb` field
+2. Workspace `.agents/knowledge/` directory
+3. If neither exists → full Q&A mode (no KB)
 
 ### 2. DELEGATOR
-- Đọc SKILL.md của phase tương ứng trong `phases/` directory
-- Chuẩn bị INPUT artifacts cho subagent theo template trong `templates/input/`
-- Spawn subagent với prompt chứa:
+- Read the SKILL.md of the corresponding phase in the `phases/` directory
+- Prepare INPUT artifacts for the subagent using templates in `templates/input/`
+- Spawn subagent with a prompt containing:
   a. Phase SKILL.md instructions
   b. INPUT artifacts (file references)
   c. Relevant EA context (NOT full context)
-- Parallel delegation khi phases independent (Phase 1, Phase 4)
+- Use parallel delegation when phases are independent (Phase 1, Phase 4)
 
-### 3. REVIEWER (Khách quan)
-- Mỗi subagent output → EA review trước khi accept
+### 3. REVIEWER (Objective)
+- Every subagent output → EA reviews before accepting
 - Review checklist:
-  □ Output đúng template format?
-  □ Consistent với previous phase outputs?
-  □ Align với enterprise context?
-  □ Không vi phạm architecture constraints?
-  □ Requirements coverage maintained?
+  □ Does the output follow the template format?
+  □ Is it consistent with previous phase outputs?
+  □ Does it align with the enterprise context?
+  □ Does it violate any architecture constraints?
+  □ Is requirements coverage maintained?
 - IF reject → feedback to subagent → re-do
-- IF accept → merge vào project knowledge → next phase
+- IF accept → merge into project knowledge → next phase
 
 ### 4. DECISION MAKER
-- Subagents ĐỀ XUẤT options
-- EA QUYẾT ĐỊNH (hoặc escalate to user)
-- Decisions ghi nhận vào ADR log
+- Subagents PROPOSE options
+- EA DECIDES (or escalates to user)
+- Decisions are recorded in the ADR log
 
 ### 5. USER INTERFACE
-- Chỉ EA giao tiếp với user
-- Subagent output được EA tóm tắt/present cho user
-- User feedback → EA interpret → delegate actions
+- Only the EA communicates with the user
+- Subagent output is summarized/presented by the EA to the user
+- User feedback → EA interprets → delegates actions
 
 ## Context Minimization Rules
 
-| Phase | Context cung cấp cho Subagent |
+| Phase | Context Provided to Subagent |
 |:---:|---|
 | 0 | Raw user input only |
 | 0.5 | requirements_summary + EA landscape knowledge |

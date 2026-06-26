@@ -1,6 +1,6 @@
 # ADR Template — MADR Format
 
-Sử dụng template này cho mọi Architecture Decision Record.
+Use this template for all Architecture Decision Records.
 
 ## Template
 
@@ -18,7 +18,7 @@ Include technical constraints, business requirements, and team context.]
 
 ## Decision
 
-[State the decision clearly. Start with "We will..." or "Chúng tôi sẽ..."]
+[State the decision clearly. Start with "We will..."]
 
 ## Alternatives Considered
 

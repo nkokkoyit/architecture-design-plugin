@@ -9,11 +9,11 @@ description: "Database schema design + API endpoint design with peer review loop
 ## Effort: 2-4h (parallel, with review loops)
 
 ## Purpose
-Thiết kế chi tiết database schema và API endpoints.
+Design detailed database schema and API endpoints.
 
 ## Parallel Strategy
 
-EA spawns 2 subagents đồng thời:
+EA spawns 2 subagents concurrently:
 
 | Subagent | Task | Sub-skill | Output |
 |---|---|---|---|

@@ -9,15 +9,15 @@ description: "Deep-dive research: parallel analysis of UI flows, API schemas, en
 ## Effort: 1-2h (parallel execution)
 
 ## Purpose
-Xây dựng knowledge base chi tiết từ raw inputs + enterprise context.
+Build a detailed knowledge base from raw inputs + enterprise context.
 
 ## Parallel Subagent Strategy
 
-EA spawns 3-4 subagents đồng thời (tùy input availability):
+EA spawns 3-4 subagents concurrently (depending on input availability):
 
 | Subagent | Task | Input | Output |
 |---|---|---|---|
-| A: UI Analyst | Phân tích UI flow, steps, data per step | HTML/mockup/Figma | `ui_flow_analysis` |
+| A: UI Analyst | Analyze UI flow, steps, data per step | HTML/mockup/Figma | `ui_flow_analysis` |
 | B: API Extractor | Extract request/response schemas from Swagger | Swagger/OpenAPI files | `api_schema_extraction` |
 | C: Codebase Analyst | Analyze existing codebase (if redesign) | Source code | `existing_architecture` |
 | D: NFR Extractor | Extract and formalize NFR from all sources | All inputs + enterprise_context | `nfr_matrix` |

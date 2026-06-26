@@ -9,49 +9,65 @@ description: "Analyze enterprise context: system landscape, business domain, dep
 ## Effort: 30 min — 1h
 
 ## Purpose
-Đặt ứng dụng mới vào bức tranh doanh nghiệp. Hiểu "nó ngồi ở đâu" trước khi thiết kế chi tiết.
+Place the new application within the enterprise landscape. Understand "where it sits" before detailed design begins.
 
-## ⚠️ CRITICAL RULE: PHẢI hỏi Enterprise Context chủ động
+## ⚠️ CRITICAL RULE: MUST Proactively Ask for Enterprise Context
 
-> **KHÔNG được skip bước hỏi enterprise context.**
-> Nếu user chưa cung cấp landscape info, PHẢI hỏi trước khi tạo output.
-> KHÔNG được infer/đoán enterprise context từ user input — PHẢI xác nhận với user.
+> **DO NOT skip the enterprise context inquiry step.**
+> If the user has not provided landscape info, MUST ask before generating output.
+> DO NOT infer/guess enterprise context from user input — MUST confirm with the user.
 
-## Step 0.5.1 — Gather Enterprise Context (BẮT BUỘC HỎI)
-
-Hỏi user những câu sau (nếu chưa có trong input):
+## Step 0.5.0 — Check Knowledge Base (NEW)
 
 ```
-Để đặt hệ thống mới vào bức tranh doanh nghiệp, tôi cần biết:
+IF EA provides company knowledge from `knowledge-base/`:
+  1. Read the provided company landscape, tech radar, team topology
+  2. Confirm with user: "I have loaded your company knowledge base. Is it still current?"
+  3. IF user confirms → skip full Q&A, only ask about PROJECT-SPECIFIC gaps:
+     - Which team will own this new service?
+     - Any new compliance requirements not in the KB?
+     - Any new external integrations not in the landscape?
+  4. Proceed to Step 0.5.2 (Map Dependencies) with KB + gap answers
+
+IF NO knowledge base available:
+  → Fall back to Step 0.5.1 (full Q&A below)
+```
+
+## Step 0.5.1 — Gather Enterprise Context (FULL Q&A — only if no KB)
+
+Ask the user the following questions (if not already provided in the input):
+
+```
+To place the new system within the enterprise landscape, I need to know:
 
 1. 🏢 System Landscape:
-   - Công ty hiện có bao nhiêu services/applications?
-   - Liệt kê các services chính liên quan tới dự án này?
-   - Có API Gateway / Service Mesh chung không?
+   - How many services/applications does the company currently have?
+   - List the main services related to this project?
+   - Is there a shared API Gateway / Service Mesh?
 
 2. 🔧 Technology Stack:
-   - Tech stack chuẩn công ty (language, framework, DB, cloud)?
-   - Có technology radar không? Stack nào approved / deprecated?
+   - What is the company's standard tech stack (language, framework, DB, cloud)?
+   - Is there a technology radar? Which stacks are approved / deprecated?
 
 3. 👥 Team Topology:
-   - Team nào sẽ own service mới?
-   - Các team liên quan (upstream/downstream)?
+   - Which team will own the new service?
+   - What are the related teams (upstream/downstream)?
    - Communication pattern? (collaboration / X-as-a-service)
 
 4. 🔒 Compliance & Security:
-   - Có yêu cầu compliance đặc biệt? (PCI-DSS, HIPAA, Insurance regs)
+   - Are there special compliance requirements? (PCI-DSS, HIPAA, Insurance regs)
    - Data classification policy?
    - Encryption requirements?
 
 5. 📊 Monitoring & Operations:
-   - Monitoring platform hiện có? (Prometheus, DataDog, AppInsights...)
+   - What is the current monitoring platform? (Prometheus, DataDog, AppInsights...)
    - Logging platform? (ELK, CloudWatch...)
    - On-call process?
 ```
 
-> **Nếu user không có document landscape:** Hỏi user mô tả bằng lời. Ít nhất phải biết: có bao nhiêu services, stack chính, ai own gì.
+> **If the user has no landscape document:** Ask the user to describe it verbally. At minimum, you must know: how many services exist, the main stack, and who owns what.
 >
-> **Nếu user đã cung cấp context trong BRD:** Xác nhận lại và hỏi gaps (thường thiếu: monitoring, team topology, compliance).
+> **If the user already provided context in the BRD:** Confirm it and ask about gaps (commonly missing: monitoring, team topology, compliance).
 
 ## Step 0.5.2 — Map Dependencies
 
@@ -67,8 +83,8 @@ For each integration point in `requirements_summary.md`:
    - Failure strategy (circuit breaker, fallback)
 
 3. **Data ownership:**
-   - Mỗi entity thuộc service nào?
-   - Source-of-truth ở đâu?
+   - Which service owns each entity?
+   - Where is the source-of-truth?
 
 4. **Compliance mapping:**
    - PII fields → encryption requirement
@@ -78,18 +94,18 @@ For each integration point in `requirements_summary.md`:
 
 | Dimension | Question | MUST answer |
 |---|---|:---:|
-| Data | Service mới tạo data entity mới hay dùng existing? | ✅ |
-| API | Có cần expose API cho services khác không? | ✅ |
-| Event | Publish events nào? Subscribe events nào? | ✅ |
-| Performance | Thêm load lên downstream services bao nhiêu? | ✅ |
-| Security | PII mới? Access control changes? | ✅ |
+| Data | Does the new service create new data entities or use existing ones? | ✅ |
+| API | Does it need to expose APIs for other services? | ✅ |
+| Event | What events does it publish? What events does it subscribe to? | ✅ |
+| Performance | How much additional load will it place on downstream services? | ✅ |
+| Security | New PII? Access control changes? | ✅ |
 
 ## Step 0.5.4 — Generate Output
 
 MUST use template: `templates/input/enterprise_context.tmpl.md`
 
 Fill ALL sections:
-1. System Landscape (Mermaid diagram BẮT BUỘC)
+1. System Landscape (Mermaid diagram MANDATORY)
 2. Service Catalog table
 3. Dependency Matrix (Upstream + Downstream)
 4. Business Domain (bounded context, capability, data ownership)
@@ -103,7 +119,7 @@ Fill ALL sections:
 |---|---|
 | Phase 0 | `requirements_summary.md` |
 | EA Knowledge | Company landscape, tech radar, team topology |
-| User (BẮT BUỘC hỏi) | Enterprise context info |
+| User (MANDATORY inquiry) | Enterprise context info |
 
 ## Output
 

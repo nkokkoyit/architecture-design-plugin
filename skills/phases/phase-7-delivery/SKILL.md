@@ -9,7 +9,7 @@ description: "Package all final artifacts into a structured delivery folder with
 ## Effort: 30 min
 
 ## Purpose
-Đóng gói tất cả artifacts thành delivery folder cho dev team.
+Package all artifacts into a delivery folder for the dev team.
 
 ## Package Structure
 

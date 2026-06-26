@@ -9,13 +9,13 @@ description: "Post-delivery governance: architecture contract, RACI ownership, o
 ## Effort: 30 min
 
 ## Purpose
-Định nghĩa governance sau delivery: ai own gì, thay đổi thế nào, monitor ra sao.
+Define post-delivery governance: who owns what, how to change, how to monitor.
 
 ## Sections
 
 ### 1. Architecture Contract
 - Scope agreement (committed vs out-of-scope)
-- Architecture constraints (extracted from ADRs) — KHÔNG được phá vỡ
+- Architecture constraints (extracted from ADRs) — MUST NOT be violated
 - Deviation process (how to change architecture)
 
 ### 2. Ownership Matrix (RACI)
